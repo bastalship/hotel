@@ -8,3 +8,8 @@
 .mb-10 {
     margin-bottom: .5rem;
 }
+
+.bg-danger {
+    color: #ffffff;
+    background-color: #f5222d;
+}

@@ -1,0 +1,38 @@
+
+
+.ant-statistic-wrapper {
+  padding: 1rem;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+
+.ant-statistic-wrapper *{
+  color: #fff !important;
+}
+
+.ant-statistic-red {
+  background-color: #f5222d !important;
+}
+
+.ant-statistic-green {
+  background-color: #389e0d !important;
+}
+
+.ant-statistic-purple {
+  background-color: #722ed1 !important;
+}
+
+.ant-statistic-dark {
+  background-color: #262626 !important;
+}
+
+.ant-statistic-light-blue {
+  background-color: #1890ff !important;
+}
+
+.ant-statistic-blue {
+  background-color: #2f54eb !important;
+}
