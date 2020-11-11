@@ -9,6 +9,7 @@ import ChartPie from './../../components/ChartPie';
 import ChartTop from './../../components/ChartTop';
 import axios from './../../service/config';
 import './style.css';
+import queryString from 'query-string';
 
 const routes = [
 	{
@@ -19,14 +20,14 @@ const routes = [
 
 class HomePage extends Component {
 	state = {
-		room: [
+		rooms: [
 			{
-				id: 0,
+				id: 'all',
 				room_code: 'All room',
 			},
 		],
 		data: null,
-		type: null,
+		room: null,
 		date: null,
 	};
 
@@ -45,7 +46,7 @@ class HomePage extends Component {
 				let list_room = [];
 				list_room = [...this.state.room, ...res.data.data];
 				this.setState({
-					room: list_room,
+					rooms: list_room,
 				});
 			})
 			.catch((err) => console.log(err));
@@ -61,17 +62,33 @@ class HomePage extends Component {
 	};
 
 	handleChange = (value) => {
-		// console.log(value);
-
+		let param = '';
+		this.setState({
+			room: value,
+		})
+		param = queryString.stringify({
+			date: this.state.date,
+			room: value,
+		})
+		param = `full?${param}`;
+		this.fetchData(param);
 	};
 
 	onChangeDate = (date, dateString) => {
-		const param = `full?date=${dateString}`;
+		let param = '';
+		this.setState({
+			date: dateString,
+		})
+		param = queryString.stringify({
+			date: dateString,
+			room: this.state.room,
+		})
+		param = `full?${param}`;
 		this.fetchData(param);
 	};
 
 	render() {
-		const { room, data } = this.state;
+		const { rooms, data } = this.state;
 		let statistic = null;
 		if (data) {
 			statistic = <StatisticList data={data} />;
@@ -105,7 +122,7 @@ class HomePage extends Component {
 					breadcrumb={{ routes }}
 				/>
 				<FormFilter
-					room={room}
+					room={rooms}
 					handleChange={this.handleChange}
 					onChangeDate={this.onChangeDate}
 				/>
