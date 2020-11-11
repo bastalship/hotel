@@ -1,113 +1,148 @@
-import React, { Component } from "react";
-import {
-  PageHeader,
-  Row,
-  Col,
-  Statistic,
-  Divider,
-  Select,
-  DatePicker,
-  Card,
-} from "antd";
-import "./style.css";
-
-import { Column } from "@ant-design/charts";
+import { ReloadOutlined } from '@ant-design/icons';
+import { Card, Col, Divider, Empty, PageHeader, Row } from 'antd';
+import moment from 'moment';
+import React, { Component } from 'react';
+import FormFilter from '../../components/FormFilter';
+import StatisticList from '../../components/StatisticList';
 import ChartColumn from './../../components/ChartColumn';
 import ChartPie from './../../components/ChartPie';
 import ChartTop from './../../components/ChartTop';
+import axios from './../../service/config';
+import './style.css';
 
 const routes = [
-  {
-    path: "/",
-    breadcrumbName: "Trang chủ",
-  },
+	{
+		path: '/',
+		breadcrumbName: 'Trang chủ',
+	},
 ];
-const { Option } = Select;
 
 class HomePage extends Component {
-  handleChange = (value) => {
-    console.log(value);
-  };
+	state = {
+		room: [
+			{
+				id: 0,
+				room_code: 'All room',
+			},
+		],
+		data: null,
+		type: null,
+		date: null,
+	};
 
-  onChangeDate = (date, dateString) => {
-    console.log(date, dateString);
-  };
+	componentDidMount() {
+		const defaultDate = `full?date=${moment().format('yyyy-MM-DD')}`;
+		this.fetchRoom();
+		this.fetchData(defaultDate);
+	}
 
-  render() {
-    return (
-      <div>
-        <PageHeader
-          className="site-page-header"
-          title="Trang chủ"
-          breadcrumb={{ routes }}
-        />
-        <Row gutter={[36, 24]}>
-          <Col xs={24} sm={12} md={8}>
-            <Select
-              defaultValue="room_service"
-              style={{ width: "100%" }}
-              onChange={this.handleChange}
-              allowClear
-            >
-              <Option value="room_service">Room Service</Option>
-              <Option value="eat_service">Eat Service</Option>
-              <Option value="swimming_pool">Swiming Pool</Option>
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <DatePicker
-              onChange={this.onChangeDate}
-              style={{ width: "100%" }}
-            />
-          </Col>
-        </Row>
-        <Divider />
-        <Row gutter={[36, 24]}>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-red">
-              <Statistic title="Active Users" value={112893} />
-            </div>
-          </Col>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-green">
-              <Statistic title="Voided" value={112893} />
-            </div>
-          </Col>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-purple">
-              <Statistic title="Customers" value={112893} />
-            </div>
-          </Col>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-dark">
-              <Statistic title="Net Sales" value={112893} />
-            </div>
-          </Col>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-light-blue">
-              <Statistic title="Net Sales" value={112893} />
-            </div>
-          </Col>
-          <Col className="gutter-row mb-10" xl={8} md={8} sm={12} xs={24}>
-            <div className="ant-statistic-wrapper ant-statistic-blue">
-              <Statistic title="Discount" value={112893} />
-            </div>
-          </Col>
-        </Row>
-        <Row gutter={[36, 24]}>
-          <Col xs={24} sm={12} md={8}>
-            <ChartColumn />
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <ChartPie />
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <ChartTop />
-          </Col>
-        </Row>
-      </div>
-    );
-  }
+	fetchRoom = (params = null) => {
+		axios
+			.get('mobile/room', {
+				params,
+			})
+			.then((res) => {
+				let list_room = [];
+				list_room = [...this.state.room, ...res.data.data];
+				this.setState({
+					room: list_room,
+				});
+			})
+			.catch((err) => console.log(err));
+	};
+
+	fetchData = (params) => {
+		axios
+			.get(`mobile/date/${params}`)
+			.then((res) => {
+				this.setState({ data: res.data.data });
+			})
+			.catch((err) => console.log(err));
+	};
+
+	handleChange = (value) => {
+		// console.log(value);
+
+	};
+
+	onChangeDate = (date, dateString) => {
+		const param = `full?date=${dateString}`;
+		this.fetchData(param);
+	};
+
+	render() {
+		const { room, data } = this.state;
+		let statistic = null;
+		if (data) {
+			statistic = <StatisticList data={data} />;
+		}
+		let sale_chart =
+			data &&
+			data.sales_data &&
+			data.sales_data.data &&
+			data.sales_data.data.length > 0 ? (
+				<ChartColumn chart={data.sales_data} />
+			) : (
+				<Empty />
+			);
+		let top_five_sales =
+			data && data.top_five_sales.length > 0 ? (
+				<ChartTop chart={data.top_five_sales} />
+			) : (
+				<Empty />
+			);
+		let sales_by_order_type =
+			data && data.sales_by_order_type.length > 0 ? (
+				<ChartPie chart={data.sales_by_order_type} />
+			) : (
+				<Empty />
+			);
+		return (
+			<div>
+				<PageHeader
+					className='site-page-header'
+					title='Trang chủ'
+					breadcrumb={{ routes }}
+				/>
+				<FormFilter
+					room={room}
+					handleChange={this.handleChange}
+					onChangeDate={this.onChangeDate}
+				/>
+				<Divider />
+				{statistic}
+				<Row gutter={[36, 24]}>
+					<Col xs={24} sm={12} md={8}>
+						<Card
+							size='small'
+							title='Sales Chart'
+							extra={<ReloadOutlined />}
+							style={{ width: '100%' }}>
+							{sale_chart}
+						</Card>
+					</Col>
+					<Col xs={24} sm={12} md={8}>
+						<Card
+							size='small'
+							title='Sales By Order Type'
+							extra={<ReloadOutlined />}
+							style={{ width: '100%' }}>
+							{sales_by_order_type}
+						</Card>
+					</Col>
+					<Col xs={24} sm={12} md={8}>
+						<Card
+							size='small'
+							title='Top 5 Sales'
+							extra={<ReloadOutlined />}
+							style={{ width: '100%' }}>
+							{top_five_sales}
+						</Card>
+					</Col>
+				</Row>
+			</div>
+		);
+	}
 }
 
 export default HomePage;
