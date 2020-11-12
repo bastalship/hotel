@@ -1,0 +1,49 @@
+.logo {
+  height: 32px;
+  background: #ffffff;
+  margin: 16px;
+  display: block;
+}
+
+.logo > img {
+  width: 100%;
+  height: inherit;
+  object-fit: scale-down;
+}
+
+.trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.site-layout .ant-layout-header {
+  z-index: 1;
+  padding: 0;
+  position: fixed;
+  box-shadow: 0 0 4px 3px rgba(109, 107, 107, 0.188);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-layout .site-layout-background {
+  background-color: #fff;
+}
+
+.ant-layout-footer {
+  /* position: fixed; */
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
+
+.ant-layout-sider {
+  z-index: 1;
+}
