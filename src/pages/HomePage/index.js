@@ -1,33 +1,26 @@
 import { ReloadOutlined } from '@ant-design/icons';
-import { Card, Col, Divider, Empty, PageHeader, Row } from 'antd';
+import { Card, Col, Divider, Empty, Row, Typography } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import FormFilter from '../../components/FormFilter';
 import StatisticList from '../../components/StatisticList';
+import { setLoading } from '../../redux/actions/loadingActions';
 import ChartColumn from './../../components/ChartColumn';
 import ChartPie from './../../components/ChartPie';
 import ChartTop from './../../components/ChartTop';
 import axios from './../../service/config';
 import './style.css';
+import { connect } from 'react-redux';
 
-const routes = [
-	{
-		path: '/',
-		breadcrumbName: 'Trang chủ',
-	},
-];
+const { Title } = Typography;
 
 class HomePage extends Component {
 	state = {
-		room: [
-			{
-				id: 0,
-				room_code: 'All room',
-			},
-		],
+		room: ['All'],
 		data: null,
-		type: null,
-		date: null,
+		type: 'all',
+		date: moment().format('yyyy-MM-DD'),
 	};
 
 	componentDidMount() {
@@ -42,31 +35,50 @@ class HomePage extends Component {
 				params,
 			})
 			.then((res) => {
+				let data = { ...res.data.data };
 				let list_room = [];
-				list_room = [...this.state.room, ...res.data.data];
+				for (let i in data.detail) {
+					list_room.push(i);
+				}
 				this.setState({
-					room: list_room,
+					room: [...this.state.room, ...list_room],
 				});
 			})
 			.catch((err) => console.log(err));
 	};
 
 	fetchData = (params) => {
+		this.props.setLoading(true);
 		axios
 			.get(`mobile/date/${params}`)
 			.then((res) => {
 				this.setState({ data: res.data.data });
+				this.props.setLoading(false);
 			})
 			.catch((err) => console.log(err));
 	};
 
 	handleChange = (value) => {
-		// console.log(value);
-
+		let param = '';
+		if (value.toLowerCase() === 'all') {
+			value = 'all';
+			param = `full?room=${value}&date=${this.state.date}`;
+		} else {
+			param = `room?room=${value}&date=${this.state.date}`;
+		}
+		this.setState({ type: value })
+		this.fetchData(param);
 	};
 
 	onChangeDate = (date, dateString) => {
-		const param = `full?date=${dateString}`;
+		let param = '';
+		
+		if (this.state.type.toLowerCase() === 'all') {
+			param = `full?room=${this.state.type}&date=${dateString}`;
+		} else {
+			param = `room?room=${this.state.type}&date=${dateString}`;
+		}
+		this.setState({ date: dateString })
 		this.fetchData(param);
 	};
 
@@ -99,11 +111,12 @@ class HomePage extends Component {
 			);
 		return (
 			<div>
-				<PageHeader
-					className='site-page-header'
-					title='Trang chủ'
-					breadcrumb={{ routes }}
-				/>
+				<Row gutter={[36, 24]}>
+					<Col xs={24}>
+						<Title level={3}>Trang chủ</Title>
+					</Col>
+				</Row>
+
 				<FormFilter
 					room={room}
 					handleChange={this.handleChange}
@@ -145,4 +158,17 @@ class HomePage extends Component {
 	}
 }
 
-export default HomePage;
+const mapStateToProps = null;
+
+const mapDispatchToProps = (dispatch, props) => {
+	return {
+		setLoading: (loading) => {
+			dispatch(setLoading(loading));
+		},
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(withRouter(HomePage));

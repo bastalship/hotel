@@ -28,7 +28,10 @@ const ChartPie = (props) => {
 	// 		value: 5,
 	// 	},
 	// ];
-	const data = props.chart;
+	const data = [...props.chart];
+	for(let i in data) {
+		data[i].value = parseInt(data[i].value);
+	}
 	console.log(data);
 	const config = {
 		appendPadding: 20,
@@ -39,7 +42,7 @@ const ChartPie = (props) => {
 		label: {
 			type: 'inner',
 			offset: '0',
-			content: '{label}',
+			content: '{percentage}',
 			style: {
 				fill: '#fff',
 				fontSize: 12,
