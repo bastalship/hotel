@@ -5,7 +5,6 @@ const { Option } = Select;
 
 const FormFilter = (props) => {
 	const data = [...props.room];
-	console.log(data);
 	return (
 		<Row gutter={[36, 24]}>
 			<Col xs={24} sm={12} md={8}>
