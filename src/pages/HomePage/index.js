@@ -83,7 +83,7 @@ class HomePage extends Component {
 	};
 
 	render() {
-		const { room, data } = this.state;
+		const { rooms, data } = this.state;
 		let statistic = null;
 		if (data) {
 			statistic = <StatisticList data={data} />;
@@ -118,7 +118,7 @@ class HomePage extends Component {
 				</Row>
 
 				<FormFilter
-					room={room}
+					room={rooms}
 					handleChange={this.handleChange}
 					onChangeDate={this.onChangeDate}
 				/>
