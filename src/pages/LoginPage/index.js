@@ -1,77 +1,108 @@
-import { Button, Card, Form, Input } from "antd";
-import { Link } from "react-router-dom";
-import logo from "./../../assets/images/logo.png";
-import React, { Component } from "react";
+import { Button, Card, Form, Input, message } from 'antd';
+import { Link, Redirect, withRouter } from 'react-router-dom';
+import logo from './../../assets/images/logo.png';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import axios from '../../service/config';
 
 const Logo = styled.div`
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
 
 class LoginPage extends Component {
-    onFinish = (values) => {
-        console.log("Success:", values);
-    };
+	state = {
+		loading: false,
+		isLogin: false,
+	};
 
-    onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-    };
+	onFinish = (values) => {
+		this.setState({ loading: true });
+		let that = this;
+		axios
+			.post('login', {
+				...values,
+			})
+			.then((res) => {
+				if (!res.errors) {
+					localStorage.setItem('token', res.data.data.access_token);
+					that.setState({ loading: false, isLogin: true });
+				} else {
+					// message.info('Có lỗi đã xảy ra');
+				}
+			})
+			.catch((err) => {
+				// message.error('Có lỗi đã xảy ra');
+				that.setState({ loading: false });
+			});
+	};
 
-    render() {
-        return (
-        <Card style={{ width: "100%" }}>
-            <Logo>
-                <Link to="/">
-                    <img src={logo} alt="logo" />
-                </Link>
-            </Logo>
-            <Form
-            layout="vertical"
-            name="basic"
-            initialValues={{
-                remember: true,
-            }}
-            onFinish={this.onFinish}
-            onFinishFailed={this.onFinishFailed}
-            >
-            <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                {
-                    required: true,
-                    message: "Please input your username!",
-                },
-                ]}
-            >
-                <Input />
-            </Form.Item>
+	render() {
+		const { from } = this.props.location.state || {
+			from: { pathname: '/' },
+		};
+		const token = localStorage.getItem('token');
+		const { isLogin } = this.state;
+		if (token || isLogin) {
+			return <Redirect to={from} />;
+		}
+		return (
+			<Card style={{ width: '100%' }}>
+				<Logo>
+					<Link to='/'>
+						<img src={logo} alt='logo' />
+					</Link>
+				</Logo>
+				<Form
+					layout='vertical'
+					name='login'
+					initialValues={{
+						remember: true,
+					}}
+					onFinish={this.onFinish}>
+					<Form.Item
+						label='Email'
+						name='email'
+						rules={[
+							{
+								required: true,
+								message: 'Vui lòng nhập email',
+							},
+						]}>
+						<Input />
+					</Form.Item>
 
-            <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                {
-                    required: true,
-                    message: "Please input your password!",
-                },
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
+					<Form.Item
+						label='Mật khẩu'
+						name='password'
+						rules={[
+							{
+								required: true,
+								message: 'Vui lòng nhập mật khẩu',
+							},
+							{
+								min: 3,
+								message: 'Tối thiệu 3 ký tự',
+							},
+						]}>
+						<Input.Password />
+					</Form.Item>
 
-            <Form.Item>
-                <Button type="primary" htmlType="submit" block>
-                Submit
-                </Button>
-            </Form.Item>
-            </Form>
-        </Card>
-    );
-  }
+					<Form.Item>
+						<Button
+							type='primary'
+							htmlType='submit'
+							block
+							loading={this.state.loading}>
+							Đăng nhập
+						</Button>
+					</Form.Item>
+				</Form>
+			</Card>
+		);
+	}
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

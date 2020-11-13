@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { message } from 'antd';
+import { Modal, Result, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 const withErrorHandler = (WrappedComponent, axios) => {
 	return class extends Component {
@@ -15,7 +16,7 @@ const withErrorHandler = (WrappedComponent, axios) => {
 			this.resInterceptor = axios.interceptors.response.use(
 				null,
 				(error) => {
-				this.setState({ error: error });
+					this.setState({ error: error });
 				}
 			);
 		}
@@ -31,7 +32,28 @@ const withErrorHandler = (WrappedComponent, axios) => {
 
 		render() {
 			return (
-				<WrappedComponent {...this.props} />
+				<>
+					<Modal
+						title={
+							this.state.error ? this.state.error.message : null
+						}
+						centered
+						onOk={this.confirmErrorHandler}
+						onCancel={this.confirmErrorHandler}
+						visible={this.state.error}>
+						<Result
+							status='500'
+							title='500'
+							subTitle='Xin lỗi, đã xảy ra lỗi'
+							extra={
+								<Button type='primary'>
+									<Link to='/'>Về trang chủ</Link>
+								</Button>
+							}
+						/>
+					</Modal>
+					<WrappedComponent {...this.props} />
+				</>
 			);
 		}
 	};

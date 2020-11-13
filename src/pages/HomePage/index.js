@@ -12,10 +12,13 @@ import ChartTop from './../../components/ChartTop';
 import axios from './../../service/config';
 import './style.css';
 import { connect } from 'react-redux';
+import withErrorHandler from '../../withErrorHandler';
 
 const { Title } = Typography;
 
 class HomePage extends Component {
+	_isMounted = false;
+	
 	state = {
 		room: ['All'],
 		data: null,
@@ -24,14 +27,19 @@ class HomePage extends Component {
 	};
 
 	componentDidMount() {
+		this._isMounted = true;
 		const defaultDate = `full?date=${moment().format('yyyy-MM-DD')}`;
 		this.fetchRoom();
 		this.fetchData(defaultDate);
 	}
 
+	componentWillUnmount() {
+		this._isMounted = false;
+	}
+
 	fetchRoom = (params = null) => {
 		axios
-			.get('mobile/room', {
+			.get('room/list', {
 				params,
 			})
 			.then((res) => {
@@ -44,18 +52,22 @@ class HomePage extends Component {
 					room: [...this.state.room, ...list_room],
 				});
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				this.props.setLoading(false);
+			});
 	};
 
 	fetchData = (params) => {
 		this.props.setLoading(true);
 		axios
-			.get(`mobile/date/${params}`)
+			.get(`date/${params}`)
 			.then((res) => {
 				this.setState({ data: res.data.data });
 				this.props.setLoading(false);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				this.props.setLoading(false);
+			});
 	};
 
 	handleChange = (value) => {
@@ -66,19 +78,19 @@ class HomePage extends Component {
 		} else {
 			param = `room?room=${value}&date=${this.state.date}`;
 		}
-		this.setState({ type: value })
+		this.setState({ type: value });
 		this.fetchData(param);
 	};
 
 	onChangeDate = (date, dateString) => {
 		let param = '';
-		
+
 		if (this.state.type.toLowerCase() === 'all') {
 			param = `full?room=${this.state.type}&date=${dateString}`;
 		} else {
 			param = `room?room=${this.state.type}&date=${dateString}`;
 		}
-		this.setState({ date: dateString })
+		this.setState({ date: dateString });
 		this.fetchData(param);
 	};
 
@@ -171,4 +183,4 @@ const mapDispatchToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(withRouter(HomePage));
+)(withRouter(withErrorHandler(HomePage, axios)));

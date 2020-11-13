@@ -1,1 +1,2 @@
-export const API_URL = 'http://192.168.1.2/demo_hotel/public/api/';
+export const API_URL = 'http://duka-dev.online/public/api/';
+// export const API_URL = 'http://localhost/demo_hotel/public/api/';
