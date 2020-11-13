@@ -50,9 +50,8 @@ class LoginPage extends Component {
 		const { from } = this.props.location.state || {
 			from: { pathname: '/' },
 		};
-		const token = localStorage.getItem('token');
 		const { isLogin } = this.state;
-		if (token) {
+		if (isLogin) {
 			return <Redirect to={from} />;
 		}
 		return (
