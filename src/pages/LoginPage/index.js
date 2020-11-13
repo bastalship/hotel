@@ -25,14 +25,15 @@ class LoginPage extends Component {
 	componentWillUnmount() {
 		this._isMounted = false;
 	}
-	onFinish = (values) => {
+	onFinish = async (values) => {
 		this.setState({ loading: true });
 		let that = this;
-		axios
+		await axios
 			.post('login', {
 				...values,
 			})
 			.then((res) => {
+				console.log(res);
 				if (!res.errors) {
 					localStorage.setItem('token', res.data.data.access_token);
 					that.setState({ loading: false, isLogin: true });
@@ -52,7 +53,7 @@ class LoginPage extends Component {
 		};
 		const token = localStorage.getItem('token');
 		const { isLogin } = this.state;
-		if (token || isLogin) {
+		if (token) {
 			return <Redirect to={from} />;
 		}
 		return (

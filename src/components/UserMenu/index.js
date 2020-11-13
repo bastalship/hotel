@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from '../../service/config';
 
 const menu = () => {
-	
-	localStorage.removeItem('token');
+	// localStorage.removeItem('token');
 	const logout = (e) => {
 		axios
 			.post('logout')
@@ -21,7 +20,7 @@ const menu = () => {
 	return (
 		<Menu onClick={logout}>
 			<Menu.Item key='0'>
-				<Link to='/auth/login'>Đăng xuất</Link>
+				<Link>Đăng xuất</Link>
 			</Menu.Item>
 		</Menu>
 	);

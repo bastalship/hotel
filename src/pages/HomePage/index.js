@@ -2,7 +2,7 @@ import { ReloadOutlined } from '@ant-design/icons';
 import { Card, Col, Divider, Empty, Row, Typography } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import FormFilter from '../../components/FormFilter';
 import StatisticList from '../../components/StatisticList';
 import { setLoading } from '../../redux/actions/loadingActions';
@@ -11,8 +11,6 @@ import ChartPie from './../../components/ChartPie';
 import ChartTop from './../../components/ChartTop';
 import axios from './../../service/config';
 import './style.css';
-import { connect } from 'react-redux';
-import withErrorHandler from '../../withErrorHandler';
 
 const { Title } = Typography;
 
@@ -183,4 +181,4 @@ const mapDispatchToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(withRouter(HomePage));
+)(HomePage);
