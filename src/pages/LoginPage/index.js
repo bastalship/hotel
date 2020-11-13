@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, message } from 'antd';
+import { Button, Card, Form, Input } from 'antd';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import logo from './../../assets/images/logo.png';
 import React, { Component } from 'react';
@@ -51,6 +51,7 @@ class LoginPage extends Component {
 			from: { pathname: '/' },
 		};
 		const { isLogin } = this.state;
+		console.log(isLogin);
 		if (isLogin) {
 			return <Redirect to={from} />;
 		}
