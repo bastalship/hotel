@@ -18,6 +18,13 @@ class LoginPage extends Component {
 		isLogin: false,
 	};
 
+	componentDidMount() {
+		this._isMounted = true;
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
+	}
 	onFinish = (values) => {
 		this.setState({ loading: true });
 		let that = this;

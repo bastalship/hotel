@@ -13,8 +13,9 @@ import Page404 from './../pages/Page404';
 
 let token = localStorage.getItem('token');
 
-const childRoutes = (Layout, routes, isAuthed) =>
-	routes.map(({ children, path, component: Component }, index) =>
+const childRoutes = (Layout, routes, isAuthed) => {
+	console.log("Vào routes");
+	return routes.map(({ children, path, component: Component }, index) =>
 		children ? (
 			// Route item with children
 			children.map(({ path, component: Component }, index) => (
@@ -73,6 +74,7 @@ const childRoutes = (Layout, routes, isAuthed) =>
 			/>
 		)
 	);
+};
 
 const Routes = () => {
 	return (

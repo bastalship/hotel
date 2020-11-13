@@ -183,4 +183,4 @@ const mapDispatchToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(withRouter(withErrorHandler(HomePage, axios)));
+)(withRouter(HomePage));

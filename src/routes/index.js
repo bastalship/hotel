@@ -1,5 +1,6 @@
 import HomePage from './../pages/HomePage';
 import ImportPage from './../pages/ImportPage';
+import ListRoomPage from './../pages/ListRoomPage';
 import LoginPage from './../pages/LoginPage';
 import Page404 from './../pages/Page404';
 
@@ -17,6 +18,11 @@ const mainsRoutes = {
 			path: '/import',
 			name: 'Import',
 			component: ImportPage,
+		},
+		{
+			path: '/list',
+			name: 'Rooms',
+			component: ListRoomPage,
 		},
 	],
 };
