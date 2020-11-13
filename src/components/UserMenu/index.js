@@ -3,6 +3,8 @@ import { Avatar, Dropdown, Menu } from "antd";
 import React from "react";
 import axios from "../../service/config";
 import { withRouter } from "react-router-dom";
+import { setAuth } from "../../redux/actions/authActions";
+import { connect } from "react-redux";
 
 class UserMenu extends React.Component {
   logout = () => {
@@ -10,6 +12,7 @@ class UserMenu extends React.Component {
       .post("logout")
       .then((res) => {
         localStorage.removeItem("token");
+        this.props.setAuth(null);
         this.props.history.push("/auth/login");
       })
       .catch((err) => {
@@ -34,4 +37,15 @@ class UserMenu extends React.Component {
   }
 }
 
-export default withRouter(UserMenu);
+
+const mapStateToProps = null;
+
+const mapDispatchToProps = (dispatch, props) => {
+	return {
+		setAuth: (token) => {
+			dispatch(setAuth(token));
+		},
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserMenu)) ;

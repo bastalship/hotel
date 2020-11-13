@@ -4,6 +4,8 @@ import logo from './../../assets/images/logo.png';
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from '../../service/config';
+import { setAuth } from './../../redux/actions/authActions'
+import { connect } from 'react-redux';
 
 const Logo = styled.div`
 	margin-bottom: 10px;
@@ -15,11 +17,14 @@ const Logo = styled.div`
 class LoginPage extends Component {
 	state = {
 		loading: false,
-		isLogin: false,
 	};
-
+	
 	componentDidMount() {
 		this._isMounted = true;
+		// const user = localStorage.getItem('token') // your saved token in localstorage
+		// if (user && user !== 'undefined') {            // check for not undefined
+		// 	this.props.history.push('/')               // now you can redirect your desired route
+		// } 
 	}
 
 	componentWillUnmount() {
@@ -27,15 +32,16 @@ class LoginPage extends Component {
 	}
 	onFinish = (values) => {
 		this.setState({ loading: true });
+		let that = this;
 		axios
 			.post('login', {
 				...values,
 			})
 			.then((res) => {
-				console.log(res);
 				if (!res.errors) {
 					localStorage.setItem('token', res.data.data.access_token);
-					this.setState({ loading: false, isLogin: true });
+					this.setState({ loading: false });
+					this.props.setAuth(res.data.data.access_token);
 				} else {
 					// message.info('Có lỗi đã xảy ra');
 				}
@@ -50,9 +56,8 @@ class LoginPage extends Component {
 		const { from } = this.props.location.state || {
 			from: { pathname: '/' },
 		};
-		const { isLogin } = this.state;
-		console.log(isLogin);
-		if (isLogin) {
+		const { token } = this.props;
+		if (token) {
 			return <Redirect to={from} />;
 		}
 		return (
@@ -112,4 +117,18 @@ class LoginPage extends Component {
 	}
 }
 
-export default withRouter(LoginPage);
+const mapStateToProps = (store) => {
+	return {
+		token: store.authReducers.token,
+	}
+};
+
+const mapDispatchToProps = (dispatch, props) => {
+	return {
+		setAuth: (token) => {
+			dispatch(setAuth(token));
+		},
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage)) ;

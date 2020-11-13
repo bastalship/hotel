@@ -1,96 +1,97 @@
-import React from 'react';
+import React from "react";
 import {
-	BrowserRouter as Router,
-	Redirect,
-	Route,
-	Switch,
-} from 'react-router-dom';
-import { main as mainRoutes, auth as authRoutes } from './index';
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
+import { main as mainRoutes, auth as authRoutes } from "./index";
 
-import MainLayout from './../layouts/MainLayout';
-import AuthLayout from './../layouts/AuthLayout';
-import Page404 from './../pages/Page404';
+import MainLayout from "./../layouts/MainLayout";
+import AuthLayout from "./../layouts/AuthLayout";
+import Page404 from "./../pages/Page404";
+import { connect } from "react-redux";
 
-let token = localStorage.getItem('token');
-
-const childRoutes = (Layout, routes, isAuthed) => {
-	return routes.map(({ children, path, component: Component }, index) =>
-		children ? (
-			// Route item with children
-			children.map(({ path, component: Component }, index) => (
-				<Route
-					key={index}
-					path={path}
-					exact
-					render={(props) =>
-						isAuthed ? (
-							token ? (
-								<Layout>
-									<Component {...props} />
-								</Layout>
-							) : (
-								<Redirect
-									to={{
-										pathname: '/auth/login',
-										state: { from: props.location },
-									}}
-								/>
-							)
-						) : (
-							<Layout>
-								<Component {...props} />
-							</Layout>
-						)
-					}
-				/>
-			))
-		) : (
-			// Route item without children
-			<Route
-				key={index}
-				path={path}
-				exact
-				render={(props) =>
-					isAuthed ? (
-						token ? (
-							<Layout>
-								<Component {...props} />
-							</Layout>
-						) : (
-							<Redirect
-								to={{
-									pathname: '/auth/login',
-									state: { from: props.location },
-								}}
-							/>
-						)
-					) : (
-						<Layout>
-							<Component {...props} />
-						</Layout>
-					)
-				}
-			/>
-		)
-	);
+const childRoutes = (Layout, routes, isAuthed, token) => {
+  return routes.map(({ children, path, component: Component }, index) =>
+    children ? (
+      // Route item with children
+      children.map(({ path, component: Component }, index) => (
+        <Route
+          key={index}
+          path={path}
+          exact
+          render={(props) =>
+            isAuthed ? (
+              token ? (
+                <Layout>
+                  <Component {...props} />
+                </Layout>
+              ) : (
+                <Redirect
+                  to={{
+                    pathname: "/auth/login",
+                    state: { from: props.location },
+                  }}
+                />
+              )
+            ) : (
+              <Layout>
+                <Component {...props} />
+              </Layout>
+            )
+          }
+        />
+      ))
+    ) : (
+      // Route item without children
+      <Route
+        key={index}
+        path={path}
+        exact
+        render={(props) =>
+          isAuthed ? (
+            token ? (
+              <Layout>
+                <Component {...props} />
+              </Layout>
+            ) : (
+              <Redirect
+                to={{
+                  pathname: "/auth/login",
+                  state: { from: props.location },
+                }}
+              />
+            )
+          ) : (
+            <Layout>
+              <Component {...props} />
+            </Layout>
+          )
+        }
+      />
+    )
+  );
 };
 
-const Routes = () => {
-	return (
-		<Router>
-			<Switch>
-				{childRoutes(MainLayout, mainRoutes, true)}
-				{childRoutes(AuthLayout, authRoutes, false)}
-				<Route
-					render={() => (
-						<AuthLayout>
-							<Page404 />
-						</AuthLayout>
-					)}
-				/>
-			</Switch>
-		</Router>
-	);
+const Routes = (props) => {
+  return (
+    <Router>
+      <Switch>
+        {childRoutes(MainLayout, mainRoutes, true, props.token)}
+        {childRoutes(AuthLayout, authRoutes, false, props.token)}
+        <Route
+          render={() => (
+            <AuthLayout>
+              <Page404 />
+            </AuthLayout>
+          )}
+        />
+      </Switch>
+    </Router>
+  );
 };
 
-export default Routes;
+export default connect((store) => ({
+	token: store.authReducers.token,
+}))(Routes);
