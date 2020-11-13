@@ -1,40 +1,37 @@
-import React from 'react';
-import { Avatar, Menu, Dropdown } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import axios from '../../service/config';
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown, Menu } from "antd";
+import React from "react";
+import axios from "../../service/config";
+import { withRouter } from "react-router-dom";
 
-const menu = () => {
-	// localStorage.removeItem('token');
-	const logout = (e) => {
-		axios
-			.post('logout')
-			.then((res) => {
-				localStorage.removeItem('token');
-			})
-			.catch((err) => {
-				localStorage.removeItem('token');
-				// message.error('Có lỗi đã xảy ra');
-			});
-	};
-	return (
-		<Menu onClick={logout}>
-			<Menu.Item key='0'>
-				<Link>Đăng xuất</Link>
-			</Menu.Item>
-		</Menu>
-	);
-};
+class UserMenu extends React.Component {
+  logout = () => {
+    axios
+      .post("logout")
+      .then((res) => {
+        localStorage.removeItem("token");
+        this.props.history.push("/auth/login");
+      })
+      .catch((err) => {
+        localStorage.removeItem("token");
+        // message.error('Có lỗi đã xảy ra');
+      });
+  };
+  render() {
+    const menu = (
+      <Menu onClick={this.logout}>
+        <Menu.Item key="0">Đăng xuất</Menu.Item>
+      </Menu>
+    );
+    return (
+      <Dropdown overlay={menu} trigger={["click"]} arrow>
+        <Avatar
+          style={{ backgroundColor: "#1890ff", marginRight: 15 }}
+          icon={<UserOutlined />}
+        />
+      </Dropdown>
+    );
+  }
+}
 
-const UserMenu = () => {
-	return (
-		<Dropdown overlay={menu} trigger={['click']} arrow>
-			<Avatar
-				style={{ backgroundColor: '#1890ff', marginRight: 15 }}
-				icon={<UserOutlined />}
-			/>
-		</Dropdown>
-	);
-};
-
-export default UserMenu;
+export default withRouter(UserMenu);

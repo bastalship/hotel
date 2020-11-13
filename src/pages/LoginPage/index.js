@@ -25,10 +25,9 @@ class LoginPage extends Component {
 	componentWillUnmount() {
 		this._isMounted = false;
 	}
-	onFinish = async (values) => {
+	onFinish = (values) => {
 		this.setState({ loading: true });
-		let that = this;
-		await axios
+		axios
 			.post('login', {
 				...values,
 			})
@@ -36,14 +35,14 @@ class LoginPage extends Component {
 				console.log(res);
 				if (!res.errors) {
 					localStorage.setItem('token', res.data.data.access_token);
-					that.setState({ loading: false, isLogin: true });
+					this.setState({ loading: false, isLogin: true });
 				} else {
 					// message.info('Có lỗi đã xảy ra');
 				}
 			})
 			.catch((err) => {
 				// message.error('Có lỗi đã xảy ra');
-				that.setState({ loading: false });
+				this.setState({ loading: false });
 			});
 	};
 

@@ -14,7 +14,6 @@ Axios.defaults.headers.common['Access-Control-Allow-Headers'] = `X-CSRF-Token`;
 
 Axios.interceptors.request.use(async (config) => {
 	const token = localStorage.getItem('token');
-	// if (token) Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	if (token) config.headers.Authorization = `Bearer ${token}`;
 	return config;
 })
