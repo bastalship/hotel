@@ -19,23 +19,20 @@ class ImportPage extends Component {
 			.post('import')
 			.then((res) => {
 				const data = res.data;
-				if (data.errors.message) {
-					notification['error']({
-						message: 'Notification',
-						description: data.errors.message,
-					});
-				} else {
+				if(res.status === 200){
 					notification.success({
-						message: 'Notification',
-						description: 'Import successfully!',
+						message: 'Thông báo',
+						description: 'Import thành công!',
 					});
 				}
-
+				if (data && data.errors && data.errors.message) {
+					notification['error']({
+						message: 'Thông báo',
+						description: data.errors.message,
+					});
+				}
 				this.setState({ loading: false });
 			})
-			.catch((err) => {
-				this.setState({ loading: false });
-			});
 	};
 
 	changeDisabled = (disabled) => {
