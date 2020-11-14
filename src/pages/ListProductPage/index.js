@@ -4,7 +4,7 @@ import axios from "../../service/config";
 import NumberFormat from "react-number-format";
 import { v4 as uuidv4 } from "uuid";
 import queryString from "query-string";
-import moment from 'moment';
+import moment from "moment";
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -50,21 +50,25 @@ class ListProductPage extends Component {
   };
 
   handleTableChange = (pagination, filters, sorter) => {
-	this.fetchData({
-		page: pagination.current,
-		per_page: pagination.pageSize,
-	});
+    this.fetchData({
+      page: pagination.current,
+      per_page: pagination.pageSize,
+    });
   };
 
   onDateChange = (date, dateString) => {
-	  console.log(dateString);
-	const { page, per_page } = this.state;
-	if(dateString[0] && dateString[1]) {
-		this.fetchData({ page, per_page, start_date: dateString[0], end_date: dateString[1] });
-	} else {
-		this.fetchData({ page, per_page });
-	}
-  }
+    const { page, per_page } = this.state;
+    if (dateString[0] && dateString[1]) {
+      this.fetchData({
+        page,
+        per_page,
+        start_date: dateString[0],
+        end_date: dateString[1],
+      });
+    } else {
+      this.fetchData({ page, per_page });
+    }
+  };
 
   render() {
     const columns = [
@@ -181,19 +185,19 @@ class ListProductPage extends Component {
           </Col>
         </Row>
         <Row gutter={[36, 24]}>
-			<Col xs={24} sm={12} md={8}>
-				<RangePicker
-					defaultValue={moment()}
-					onChange={this.onDateChange}
-					style={{ width: '100%' }}
-				/>
-			</Col>
-		</Row>
+          <Col xs={24} sm={12} md={8}>
+            <RangePicker
+              defaultValue={moment()}
+              onChange={this.onDateChange}
+              style={{ width: "100%" }}
+            />
+          </Col>
+        </Row>
         <Divider />
         <Row gutter={[36, 24]}>
           <Col xs={24}>
             <Table
-				scroll={{ x: 600 }}
+              scroll={{ x: 600 }}
               columns={columns}
               rowKey={(record) => uuidv4()}
               dataSource={data}
