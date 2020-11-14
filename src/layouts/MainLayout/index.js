@@ -8,7 +8,7 @@ import {
 import { Layout, Menu, Spin } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import logo from "./../../assets/images/logo.png";
 import "./style.css";
 import UserMenu from "./../../components/UserMenu";
@@ -18,6 +18,7 @@ const { Header, Content, Footer, Sider } = Layout;
 class MainLayout extends Component {
   state = {
     collapsed: false,
+    current: "1",
   };
 
   toggle = () => {
@@ -25,8 +26,22 @@ class MainLayout extends Component {
       collapsed: !this.state.collapsed,
     });
   };
+
+  handleClick = async (e) => {
+    await this.setState({ current: e.key });
+    if (parseInt(e.key) === 1) {
+      this.props.history.push("/");
+    } else if (parseInt(e.key) === 2) {
+      this.props.history.push("/rooms");
+    } else if (parseInt(e.key) === 3) {
+      this.props.history.push("/products");
+    } else if (parseInt(e.key) === 4) {
+      this.props.history.push("/import");
+    }
+  };
+
   render() {
-    const { collapsed } = this.state;
+    const { collapsed, current } = this.state;
     const { loading, children } = this.props;
     return (
       <Layout>
@@ -51,15 +66,24 @@ class MainLayout extends Component {
           <Link className="logo" to="/">
             <img src={logo} alt="Logo" />
           </Link>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+          <Menu
+            theme="dark"
+            mode="inline"
+            // defaultSelectedKeys={["1"]}
+            selectedKeys={[current]}
+            onClick={this.handleClick}
+          >
             <Menu.Item key="1" icon={<UserOutlined />}>
-              <Link to="/">Trang chủ</Link>
+              Trang chủ
             </Menu.Item>
             <Menu.Item key="2" icon={<UnorderedListOutlined />}>
-              <Link to="/list">Danh sách</Link>
+              Phòng
             </Menu.Item>
             <Menu.Item key="3" icon={<UploadOutlined />}>
-              <Link to="/import">Import</Link>
+              Sản phẩm
+            </Menu.Item>
+            <Menu.Item key="4" icon={<UploadOutlined />}>
+              Import
             </Menu.Item>
           </Menu>
         </Sider>
@@ -112,4 +136,7 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainLayout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(MainLayout));

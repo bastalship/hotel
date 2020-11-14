@@ -9,7 +9,7 @@ import moment from 'moment';
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
-class ListRoomPage extends Component {
+class ListProductPage extends Component {
   state = {
     room: [
       {
@@ -33,7 +33,7 @@ class ListRoomPage extends Component {
     this.setState({ table_loading: true });
     const query = queryString.stringify(params);
     axios
-      .get(`room/export?${query}`)
+      .get(`product/export?${query}`)
       .then((res) => {
         let data = { ...res.data.data };
         this.setState({
@@ -69,16 +69,73 @@ class ListRoomPage extends Component {
   render() {
     const columns = [
       {
-        title: "Mã phòng",
-        dataIndex: "room_code",
-        sorter: true,
+        title: "Mã",
+        dataIndex: "product_code",
       },
       {
-        title: "Giá phòng",
-        dataIndex: "sales",
-        render: (sale) => (
+        title: "Tên",
+        dataIndex: "product_name",
+      },
+      {
+        title: "ĐVT",
+        dataIndex: "product_unit",
+      },
+      {
+        title: "Tồn đầu",
+        dataIndex: "product_first_amount",
+        render: (product_first_amount) => (
           <NumberFormat
-            value={sale}
+            value={product_first_amount}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        ),
+        align: "right",
+      },
+      {
+        title: "Nhập",
+        dataIndex: "product_input",
+        render: (product_input) => (
+          <NumberFormat
+            value={product_input}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        ),
+        align: "right",
+      },
+
+      {
+        title: "Xuất",
+        dataIndex: "product_out",
+        render: (product_out) => (
+          <NumberFormat
+            value={product_out}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        ),
+        align: "right",
+      },
+      {
+        title: "Giá đầu vào",
+        dataIndex: "product_input_price",
+        render: (product_input_price) => (
+          <NumberFormat
+            value={product_input_price}
+            displayType={"text"}
+            thousandSeparator={true}
+            suffix="đ"
+          />
+        ),
+        align: "right",
+      },
+      {
+        title: "Giá đầu ra",
+        dataIndex: "product_out_price",
+        render: (product_out_price) => (
+          <NumberFormat
+            value={product_out_price}
             displayType={"text"}
             thousandSeparator={true}
             suffix="đ"
@@ -88,10 +145,10 @@ class ListRoomPage extends Component {
       },
       {
         title: "Chi phí",
-        dataIndex: "cost",
-        render: (cost) => (
+        dataIndex: "product_cost",
+        render: (product_cost) => (
           <NumberFormat
-            value={cost}
+            value={product_cost}
             displayType={"text"}
             thousandSeparator={true}
             suffix="đ"
@@ -100,11 +157,11 @@ class ListRoomPage extends Component {
         align: "right",
       },
       {
-        title: "Lợi nhuận",
-        dataIndex: "profit",
-        render: (profit) => (
+        title: "Doanh thu",
+        dataIndex: "product_sale_price",
+        render: (product_sale_price) => (
           <NumberFormat
-            value={profit}
+            value={product_sale_price}
             displayType={"text"}
             thousandSeparator={true}
             suffix="đ"
@@ -120,7 +177,7 @@ class ListRoomPage extends Component {
       <div>
         <Row gutter={[36, 24]}>
           <Col xs={24}>
-            <Title level={3}>Danh sách phòng</Title>
+            <Title level={3}>Danh sách sản phẩm</Title>
           </Col>
         </Row>
         <Row gutter={[36, 24]}>
@@ -155,4 +212,4 @@ class ListRoomPage extends Component {
   }
 }
 
-export default ListRoomPage;
+export default ListProductPage;
