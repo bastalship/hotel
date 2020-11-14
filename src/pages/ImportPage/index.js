@@ -37,7 +37,7 @@ class ImportPage extends Component {
 		this.setState({ loading: false });
 		notification["error"]({
             message: "Thông báo",
-            description: data.errors.message,
+            description: "Có lỗi đã xảy ra",
           });
       });
   };
