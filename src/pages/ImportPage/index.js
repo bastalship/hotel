@@ -10,7 +10,7 @@ const { Title } = Typography;
 class ImportPage extends Component {
 	state = {
 		loading: false,
-		disabled: false,
+		disabled: true,
 	};
 
 	handleImport = () => {
@@ -20,7 +20,6 @@ class ImportPage extends Component {
 			.then((res) => {
 				const data = res.data;
 				if (data.errors.message) {
-					console.log('Vào đây');
 					notification['error']({
 						message: 'Notification',
 						description: data.errors.message,
@@ -39,6 +38,10 @@ class ImportPage extends Component {
 			});
 	};
 
+	changeDisabled = (disabled) => {
+		this.setState({ disabled: disabled });
+	}
+
 	render() {
 		const { loading, disabled } = this.state;
 		return (
@@ -49,10 +52,7 @@ class ImportPage extends Component {
 					</Col>
 				</Row>
 				<Row gutter={[16, 24]}>
-					<Col className='gutter-row mb-10' span={24}>
-						<Upload />
-					</Col>
-					<Col className='gutter-row' span={24}>
+				<Col className='gutter-row' span={24}>
 						<Button
 							type='primary'
 							icon={<UploadOutlined />}
@@ -63,6 +63,10 @@ class ImportPage extends Component {
 							Import
 						</Button>
 					</Col>
+					<Col className='gutter-row mb-10' span={24}>
+						<Upload changeDisabled={this.changeDisabled}/>
+					</Col>
+					
 				</Row>
 			</div>
 		);

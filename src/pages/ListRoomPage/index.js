@@ -1,14 +1,39 @@
 import { Col, Divider, Row, Typography, Table } from 'antd';
 import React, { Component } from 'react';
 import FormFilter from '../../components/FormFilter';
-// import reqwest from 'reqwest';
+import axios from '../../service/config';
 
 const { Title } = Typography;
 
 class ListRoomPage extends Component {
 	state = {
-		room: [],
+		room: [{
+			id: 'all',
+			room_code: 'All'
+		}],
+		data: [],
 	};
+
+	componentDidMount() {
+		this.fetchData();
+	}
+
+	fetchData = () => {
+		axios
+			.get('product/export?page=1&per_page=10')
+			.then((res) => {
+				// let data = { ...res.data.data };
+					console.log(res.data.data);
+				// this.setState({
+				// 	room: [...this.state.room, ...res.data.data],
+				// });
+			})
+			.catch((err) => {
+				this.props.setLoading(false);
+			});
+	}
+
+
 	render() {
 		const columns = [
 			{
