@@ -21,18 +21,14 @@ class LoginPage extends Component {
 	
 	componentDidMount() {
 		this._isMounted = true;
-		// const user = localStorage.getItem('token') // your saved token in localstorage
-		// if (user && user !== 'undefined') {            // check for not undefined
-		// 	this.props.history.push('/')               // now you can redirect your desired route
-		// } 
 	}
 
 	componentWillUnmount() {
 		this._isMounted = false;
 	}
+
 	onFinish = (values) => {
-		this.setState({ loading: true });
-		let that = this;
+		this.setState({ loading: true }); 
 		axios
 			.post('login', {
 				...values,

@@ -9,13 +9,13 @@ const FormFilter = (props) => {
 		<Row gutter={[36, 24]}>
 			<Col xs={24} sm={12} md={8}>
 				<Select
-					defaultValue={data[0]}
+					defaultValue={data[0].room_code}
 					style={{ width: '100%' }}
 					onChange={props.handleChange}>
 					{data.map((item, i) => {
 						return (
-							<Option key={item.id + '_' + i} value={item}>
-								{item}
+							<Option key={item.id + '_' + i} value={item.room_code}>
+								{item.room_code}
 							</Option>
 						);
 					})}

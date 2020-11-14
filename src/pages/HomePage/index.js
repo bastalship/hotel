@@ -18,7 +18,10 @@ class HomePage extends Component {
 	_isMounted = false;
 	
 	state = {
-		room: ['All'],
+		room: [{
+			id: 'all',
+			room_code: 'All'
+		}],
 		data: null,
 		type: 'all',
 		date: moment().format('yyyy-MM-DD'),
@@ -42,12 +45,9 @@ class HomePage extends Component {
 			})
 			.then((res) => {
 				let data = { ...res.data.data };
-				let list_room = [];
-				for (let i in data.detail) {
-					list_room.push(i);
-				}
+				
 				this.setState({
-					room: [...this.state.room, ...list_room],
+					room: [...this.state.room, ...res.data.data],
 				});
 			})
 			.catch((err) => {
